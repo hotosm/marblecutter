@@ -14,18 +14,17 @@ setup(
     zip_safe=False,
     package_data={"marblecutter": ["static/images/*", "templates/*"]},
     install_requires=[
-        "future",
-        "futures",
-        "haversine",
-        "mercantile",
-        "numpy",
-        "Pillow",
-        "rasterio[s3]>=1.0rc2",
-        "requests",
+        "future==0.16.0",
+        "futures==3.0.5",
+        "haversine==0.4.5",
+        "mercantile==1.0.0",
+        "numpy==1.11.0",
+        "Pillow==4.3.0",
+        "rasterio[s3]>=1.0.9",
+        "requests==2.18.4",
         "rio-pansharpen ~= 0.2.0",
-        # TODO upgrade me
-        "rio-tiler ~= 0.0.3",
-        "rio-toa",
+        "rio-tiler==0.0.3",
+        "rio-toa==0.3.0",
     ],
     # dependency_links=[
     #     'https://github.com/mapbox/rasterio/archive/master.tar.gz#egg=rasterio[s3]',
@@ -33,6 +32,6 @@ setup(
     extras_require={
         "color_ramp": "matplotlib",
         "postgis": "psycopg2",
-        "web": ["flask", "flask-cors"],
+        "web": ["flask==0.12.2", "flask-cors==3.0.3"],
     },
 )
