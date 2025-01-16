@@ -1,0 +1,15 @@
+!*.pyc
+*.hbs
+*.json
+.git/
+deps/
+functions/
+!lib/
+node_modules/
+!share/
+task/
+!.pypath/
+!.pypath/*/.libs/
+!.pypath/botocore/data/*.json
+!.pypath/botocore/data/*/*/*.json
+.pypath/*.py
