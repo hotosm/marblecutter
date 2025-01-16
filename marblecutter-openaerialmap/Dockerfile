@@ -1,19 +1,4 @@
-FROM quay.io/mojodna/gdal:v2.3.2
-MAINTAINER Seth Fitzsimmons <seth@mojodna.net>
-
-ARG http_proxy
-
-ENV DEBIAN_FRONTEND noninteractive
-ENV GDAL_CACHEMAX 512
-ENV GDAL_DISABLE_READDIR_ON_OPEN TRUE
-ENV GDAL_HTTP_MERGE_CONSECUTIVE_RANGES YES
-ENV VSI_CACHE TRUE
-# tune this according to how much memory is available
-ENV VSI_CACHE_SIZE 536870912
-# override this accordingly; should be 2-4x $(nproc)
-ENV WEB_CONCURRENCY 4
-
-EXPOSE 8000
+FROM quay.io/mojodna/gdal:v2.3.2 AS base
 
 RUN apt-get update \
   && apt-get upgrade -y \
@@ -25,20 +10,34 @@ RUN apt-get update \
     python-pip \
     python-wheel \
     python-setuptools \
+    python-numpy \
+    python-gevent \
+    python-gunicorn \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/marblecutter
 
-COPY requirements-server.txt /opt/marblecutter/
-COPY requirements.txt /opt/marblecutter/
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-RUN pip install -U numpy && \
-  pip install -r requirements-server.txt && \
-  rm -rf /root/.cache
-
+COPY gunicorn /usr/local/bin/
+RUN chmod +x /usr/local/bin/gunicorn
 COPY openaerialmap /opt/marblecutter/openaerialmap
 
-USER nobody
 
+FROM scratch
+ENV DEBIAN_FRONTEND=noninteractive \
+    GDAL_CACHEMAX=512 \
+    GDAL_DISABLE_READDIR_ON_OPEN=TRUE \
+    GDAL_HTTP_MERGE_CONSECUTIVE_RANGES=YES \
+    VSI_CACHE=TRUE \
+    # tune this according to how much memory is available
+    VSI_CACHE_SIZE=536870912 \
+    # override this accordingly; should be 2-4x $(nproc)
+    WEB_CONCURRENCY=4
+WORKDIR /opt/marblecutter
+EXPOSE 8000
+USER nobody
 ENTRYPOINT ["gunicorn", "-k", "gevent", "-b", "0.0.0.0", "--access-logfile", "-", "openaerialmap.web:app"]
+COPY --from=base / /

@@ -1,8 +1,28 @@
 arrow ~= 0.10.0
 boto3 ~= 1.7.35
 cachetools ~= 2.0.0
-# marblecutter[color_ramp,postgis,web] ~= 0.3.1
-https://github.com/mojodna/marblecutter/archive/fb9b6d3.tar.gz#egg=marblecutter[web]
-# https://github.com/mapbox/rasterio/archive/b5ff28a.tar.gz#egg=rasterio[s3] --no-binary rasterio
+git+https://github.com/hotosm/marblecutter#egg=marblecutter[web]
 rasterio[s3] ~= 1.0.9 --no-binary rasterio
 requests ~= 2.18.3
+
+# override unpinned rasterio deps
+affine==2.1.0
+attrs==17.4.0
+cligj==0.4.0
+numpy==1.11.0
+snuggs==1.4.1
+click-plugins==1.0.3
+
+# override unpinned snuggs deps
+pyparsing==2.2.0
+
+# override unpinned botocore deps
+docutils==0.14
+jmespath==0.9.3
+
+# additional unpinned deps
+jinja2==2.10
+MarkupSafe==1.0
+Werkzeug==0.14.1
+itsdangerous==0.24
+certifi==2017.11.5
